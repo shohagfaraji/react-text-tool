@@ -6,8 +6,8 @@ export default function Textform() {
     const [mainText, setMainText] = useState("");
     const [text, setText] = useState("");
 
-    const wordsCount = mainText.trim().split(/\s+/).filter(Boolean).length;
-    const charCount = mainText.replace(/\s/g, "").length;
+    const wordsCount = text.trim().split(/\s+/).filter(Boolean).length;
+    const charCount = text.replace(/\s/g, "").length;
 
     let readingTimeText = "";
 
@@ -156,6 +156,53 @@ export default function Textform() {
         });
     };
 
+    // Replace words
+    const [showReplacePopup, setShowReplacePopup] = useState(false);
+    const [wordToReplace, setWordToReplace] = useState("");
+    const [replacementWord, setReplacementWord] = useState("");
+    const [showNoMatchPopup, setShowNoMatchPopup] = useState(false);
+    const [hasReplacedOnce, setHasReplacedOnce] = useState(false);
+    const [showAllReplacedPopup, setShowAllReplacedPopup] = useState(false);
+
+    const handleReplace = () => {
+        const regex = new RegExp(`\\b${wordToReplace}\\b`);
+        if (!regex.test(text)) {
+            if (hasReplacedOnce) {
+                // Match previously happened, but not anymore
+                setShowReplacePopup(false);
+                setShowAllReplacedPopup(true);
+            } else {
+                // Never had a match to begin with
+                setShowReplacePopup(false);
+                setShowNoMatchPopup(true);
+            }
+            return;
+        }
+
+        const updatedText = text.replace(regex, replacementWord);
+        setText(updatedText);
+        setHasReplacedOnce(true);
+    };
+
+    const handleReplaceAll = () => {
+        const regex = new RegExp(`\\b${wordToReplace}\\b`, "g");
+        if (!regex.test(text)) {
+            setShowReplacePopup(false);
+            setShowNoMatchPopup(true);
+            return;
+        }
+
+        const updatedText = text.replace(regex, replacementWord);
+        setText(updatedText);
+        handleDone(); // auto-close popup
+    };
+
+    const handleDone = () => {
+        setShowReplacePopup(false);
+        setWordToReplace("");
+        setReplacementWord("");
+    };
+
     //Extract links
     const extractLinks = (input) => {
         const str = String(input || "");
@@ -167,6 +214,20 @@ export default function Textform() {
     const handleExtractClick = () => {
         const links = extractLinks(text);
         setText(links);
+    };
+
+    const separateLinesSingle = () => {
+        const sentenceRegex = /[^.!?]+[.!?]+["']?\s*/g;
+        const sentences = mainText.match(sentenceRegex);
+
+        if (sentences) {
+            const separated = sentences
+                .map((s, index) => `${index + 1}) ${s.trim()}`)
+                .join("\n\n");
+            setText(separated);
+        } else {
+            setText(mainText); // Fallback if no matches
+        }
     };
 
     const removeExtraSpaces = () => {
@@ -230,42 +291,67 @@ export default function Textform() {
                     >
                         Change Main Text
                     </button>
+
                     <button
                         className="btn btn-primary"
                         onClick={changeToUpperCase}
                     >
                         Convert to Upper Case
                     </button>
+
                     <button
                         className="btn btn-primary"
                         onClick={changeToLowerCase}
                     >
                         Convert to Lower Case
                     </button>
+
+                    <button
+                        className="btn btn-secondary"
+                        onClick={() => {
+                            setShowReplacePopup(true);
+                            setHasReplacedOnce(false);
+                        }}
+                    >
+                        Replace Words
+                    </button>
+
                     <button
                         className="btn btn-primary"
                         onClick={convertToMorse}
                     >
                         Convert to Morse Code
                     </button>
+
                     <button className="btn btn-info" onClick={handleShiftLeft}>
                         Caesar Cipher Left Shift
                     </button>
+
                     <button className="btn btn-info" onClick={handleShiftRight}>
                         Caesar Cipher Right Shift
                     </button>
+
                     <button
                         className="btn btn-primary"
                         onClick={handleExtractClick}
                     >
                         Extract Links
                     </button>
+
+                    <button
+                        className="btn btn-primary"
+                        onClick={separateLinesSingle}
+                    >
+                        Separate Sentences (Single Line Each)
+                    </button>
+
                     <button
                         className="btn btn-primary"
                         onClick={removeExtraSpaces}
                     >
                         Remove Extra Spaces
                     </button>
+
                     {/* <button className="btn btn-info " onClick={copyChangedText}>
                         Copy to clipboard
                     </button> */}
@@ -286,11 +372,107 @@ export default function Textform() {
                     padding: "1rem",
                 }}
             >
+                {showReplacePopup && (
+                    <div className="replace-popup">
+                        <div className="popup-inner">
+                            <h4 style={{ textAlign: "center" }}>
+                                Replace Words
+                            </h4>
+                            <input
+                                type="text"
+                                placeholder="Word to replace"
+                                value={wordToReplace}
+                                onChange={(e) =>
+                                    setWordToReplace(e.target.value)
+                                }
+                                className="form-control my-2"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Replace with"
+                                value={replacementWord}
+                                onChange={(e) =>
+                                    setReplacementWord(e.target.value)
+                                }
+                                className="form-control my-2"
+                            />
+                            <div className="d-flex justify-content-between">
+                                <button
+                                    className="btn btn-info"
+                                    onClick={handleReplace}
+                                >
+                                    Replace
+                                </button>
+
+                                <button
+                                    className="btn btn-info"
+                                    onClick={handleReplaceAll}
+                                >
+                                    Replace All
+                                </button>
+
+                                <button
+                                    className="btn btn-success"
+                                    onClick={handleDone}
+                                >
+                                    Done
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {showNoMatchPopup && (
+                    <div className="replace-popup">
+                        <div className="popup-inner">
+                            <h4 style={{ textAlign: "center" }}>
+                                No match found
+                            </h4>
+                            <div className="d-flex justify-content-center mt-3">
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => {
+                                        setShowNoMatchPopup(false);
+                                        setShowReplacePopup(true); // reopen replace popup
+                                    }}
+                                >
+                                    OK
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {showAllReplacedPopup && (
+                    <div className="replace-popup">
+                        <div className="popup-inner">
+                            <h4 style={{ textAlign: "center" }}>
+                                All matches already replaced
+                            </h4>
+                            <div className="d-flex justify-content-center mt-3">
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => {
+                                        setShowAllReplacedPopup(false);
+                                        setWordToReplace("");
+                                        setReplacementWord("");
+                                        setShowReplacePopup(false);
+                                    }}
+                                >
+                                    OK
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 <h3>Your text summary:</h3>
                 <p>
-                    {wordsCount} words {charCount} characters. It will take{" "}
-                    {readingTimeText}.
+                    {wordsCount} {wordsCount === 1 ? "word" : "words"}{" "}
+                    {charCount} {charCount === 1 ? "character" : "characters"}.
+                    It will take {readingTimeText}.
                 </p>
+
                 {wordsCount > 0 && <h3>Preview</h3>}
                 <div
                     className="container textarea-wrapper my-3"
