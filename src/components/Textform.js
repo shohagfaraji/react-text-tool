@@ -235,9 +235,40 @@ export default function Textform() {
         setText(newText.join(" "));
     };
 
-    // const copyChangedText = () => {
-    //     navigator.clipboard.writeText(text);
-    // };
+    // Download
+    const handleSaveAsTxt = () => {
+        const element = document.createElement("a");
+        const file = new Blob([text], { type: "text/plain" });
+        element.href = URL.createObjectURL(file);
+        element.download = "Shift-Text.txt";
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    };
+
+    const escapeHTML = (str) =>
+        str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    const handleSaveAsPDF = () => {
+        const content = escapeHTML(text || "No content to save");
+        const printWindow = window.open("", "_blank");
+
+        printWindow.document.write(`
+        <html>
+            <head><title>Shift-Text</title></head>
+            <body onload="window.print(); window.onafterprint = window.close();">
+                <pre style="white-space: pre-wrap; font-size: 18px;">${content}</pre>
+            </body>
+        </html>
+    `);
+
+        printWindow.document.close();
+    };
 
     const clearTextBox = () => {
         setText("");
@@ -355,6 +386,21 @@ export default function Textform() {
                     {/* <button className="btn btn-info " onClick={copyChangedText}>
                         Copy to clipboard
                     </button> */}
+
+                    <button
+                        className="btn btn-success"
+                        onClick={handleSaveAsTxt}
+                    >
+                        Save as .txt
+                    </button>
+
+                    <button
+                        className="btn btn-success"
+                        onClick={handleSaveAsPDF}
+                    >
+                        Save as PDF
+                    </button>
+
                     <button
                         type="button"
                         className="btn btn-danger"
