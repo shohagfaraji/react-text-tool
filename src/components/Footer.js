@@ -9,17 +9,6 @@ const Footer = () => {
                 <p style={{ margin: 0 }}>
                     &copy; {currentYear} Shohag Faraji. All rights reserved.
                 </p>
-                {/* <div style={linkContainerStyle}>
-                    <a href="/" style={linkStyle}>
-                        Privacy Policy
-                    </a>
-                    <a href="/" style={linkStyle}>
-                        Terms
-                    </a>
-                    <a href="/" style={linkStyle}>
-                        Contact
-                    </a>
-                </div> */}
             </div>
         </footer>
     );
