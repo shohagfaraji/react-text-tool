@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import "./TextareaWithCopy.css";
 import "../App.css";
 
-export default function Textform() {
+export default function Textform(props) {
     const [mainText, setMainText] = useState("");
     const [text, setText] = useState("");
 
@@ -24,19 +24,34 @@ export default function Textform() {
     };
 
     const changeMainText = () => {
-        setMainText(text);
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            setMainText(text);
+            props.showAlert("The main text has been updated.", "warning");
+        }
     };
 
     const changeToUpperCase = () => {
-        let newText = mainText.toUpperCase();
-        setText(newText);
-        setShiftCounter(0);
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            let newText = mainText.toUpperCase();
+            setText(newText);
+            setShiftCounter(0);
+            props.showAlert("Converted to UPPERCASE.", "info");
+        }
     };
 
     const changeToLowerCase = () => {
-        let newText = mainText.toLowerCase();
-        setText(newText);
-        setShiftCounter(0);
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            let newText = mainText.toLowerCase();
+            setText(newText);
+            setShiftCounter(0);
+            props.showAlert("Converted to Lowercase.", "info");
+        }
     };
 
     // International Morse Code Mapping
@@ -62,98 +77,117 @@ export default function Textform() {
     };
 
     const convertToMorse = () => {
-        const upperText = mainText.toUpperCase();
-        const morse = upperText
-            .split("")
-            .map((char) => {
-                return morseCodeMap[char] || ""; // Ignore unsupported characters
-            })
-            .join(" ");
-        setText(morse);
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            const upperText = mainText.toUpperCase();
+            const morse = upperText
+                .split("")
+                .map((char) => {
+                    return morseCodeMap[char] || ""; // Ignore unsupported characters
+                })
+                .join(" ");
+            setText(morse);
+            props.showAlert("Converted to MORSE CODE.", "info");
+        }
     };
 
     // Caesar Cipher Shift Function
     const [shiftCounter, setShiftCounter] = useState(0); // Shift counter
 
     const caesarShift = (input, shiftValue) => {
-        return input
-            .split("")
-            .map((char) => {
-                const code = char.charCodeAt(0);
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            return input
+                .split("")
+                .map((char) => {
+                    const code = char.charCodeAt(0);
 
-                // Uppercase letters
-                if (code >= 65 && code <= 90) {
-                    return String.fromCharCode(
-                        ((code - 65 + shiftValue + 26) % 26) + 65
-                    );
-                }
+                    // Uppercase letters
+                    if (code >= 65 && code <= 90) {
+                        return String.fromCharCode(
+                            ((code - 65 + shiftValue + 26) % 26) + 65
+                        );
+                    }
 
-                // Lowercase letters
-                if (code >= 97 && code <= 122) {
-                    return String.fromCharCode(
-                        ((code - 97 + shiftValue + 26) % 26) + 97
-                    );
-                }
+                    // Lowercase letters
+                    if (code >= 97 && code <= 122) {
+                        return String.fromCharCode(
+                            ((code - 97 + shiftValue + 26) % 26) + 97
+                        );
+                    }
 
-                // Leave all other characters as is
-                return char;
-            })
-            .join("");
+                    // Leave all other characters as is
+                    return char;
+                })
+                .join("");
+        }
     };
 
     // Shift Right Handler
     const handleShiftRight = () => {
-        const newShift = (shiftCounter + 1) % 26;
-        setShiftCounter(newShift);
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            const newShift = (shiftCounter + 1) % 26;
+            setShiftCounter(newShift);
 
-        setText((prev) => {
-            // Remove first line if it's the shift label
-            const lines = prev.split("\n");
-            const firstLine = lines[0];
-            let actualText = prev;
+            setText((prev) => {
+                // Remove first line if it's the shift label
+                const lines = prev.split("\n");
+                const firstLine = lines[0];
+                let actualText = prev;
 
-            if (firstLine.startsWith("**Decode: Left shift")) {
-                actualText = lines.slice(1).join("\n").trimStart();
-            }
+                if (firstLine.startsWith("**Decode: Left shift")) {
+                    actualText = lines.slice(1).join("\n").trimStart();
+                }
 
-            const shifted = caesarShift(actualText, 1);
-            if (newShift !== 0) {
-                return `**Decode: Left shift ${newShift} ${
-                    newShift === 1 ? "time" : "times"
-                } (or Right shift ${26 - newShift} ${
-                    26 - newShift === 1 ? "time" : "times"
-                }) to get the Original text.**\n\n${shifted}`;
-            } else {
-                return shifted;
-            }
-        });
+                const shifted = caesarShift(actualText, 1);
+                if (newShift !== 0) {
+                    return `**Decode: Left shift ${newShift} ${
+                        newShift === 1 ? "time" : "times"
+                    } (or Right shift ${26 - newShift} ${
+                        26 - newShift === 1 ? "time" : "times"
+                    }) to get the Original text.**\n\n${shifted}`;
+                } else {
+                    return shifted;
+                }
+            });
+            props.showAlert("Text encrypted using right shift.", "info");
+        }
     };
 
     // Shift Left Handler
     const handleShiftLeft = () => {
-        const newShift = (shiftCounter - 1 + 26) % 26;
-        setShiftCounter(newShift);
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            const newShift = (shiftCounter - 1 + 26) % 26;
+            setShiftCounter(newShift);
 
-        setText((prev) => {
-            const lines = prev.split("\n");
-            const firstLine = lines[0];
-            let actualText = prev;
+            setText((prev) => {
+                const lines = prev.split("\n");
+                const firstLine = lines[0];
+                let actualText = prev;
 
-            if (firstLine.startsWith("**Decode: Left shift")) {
-                actualText = lines.slice(1).join("\n").trimStart();
-            }
+                if (firstLine.startsWith("**Decode: Left shift")) {
+                    actualText = lines.slice(1).join("\n").trimStart();
+                }
 
-            const shifted = caesarShift(actualText, -1);
-            if (newShift !== 0) {
-                return `**Decode: Left shift ${newShift} ${
-                    newShift === 1 ? "time" : "times"
-                } (or Right shift ${26 - newShift} ${
-                    26 - newShift === 1 ? "time" : "times"
-                }) to get the Original text.**\n\n${shifted}`;
-            } else {
-                return shifted;
-            }
-        });
+                const shifted = caesarShift(actualText, -1);
+                if (newShift !== 0) {
+                    return `**Decode: Left shift ${newShift} ${
+                        newShift === 1 ? "time" : "times"
+                    } (or Right shift ${26 - newShift} ${
+                        26 - newShift === 1 ? "time" : "times"
+                    }) to get the Original text.**\n\n${shifted}`;
+                } else {
+                    return shifted;
+                }
+            });
+            props.showAlert("Text encrypted using left shift.", "info");
+        }
     };
 
     // Replace words
@@ -182,6 +216,7 @@ export default function Textform() {
         const updatedText = text.replace(regex, replacementWord);
         setText(updatedText);
         setHasReplacedOnce(true);
+        props.showAlert("Replaced word successfully.", "info");
     };
 
     const handleReplaceAll = () => {
@@ -195,6 +230,7 @@ export default function Textform() {
         const updatedText = text.replace(regex, replacementWord);
         setText(updatedText);
         handleDone(); // auto-close popup
+        props.showAlert("Word replacement successful.", "info");
     };
 
     const handleDone = () => {
@@ -212,38 +248,65 @@ export default function Textform() {
     };
 
     const handleExtractClick = () => {
-        const links = extractLinks(text);
-        setText(links);
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            const links = extractLinks(text);
+            setText(links);
+            if (links === "No links found") {
+                props.showAlert("No URLs found in the text.", "warning");
+            } else {
+                props.showAlert("Links extracted", "info");
+            }
+        }
     };
 
     const separateLinesSingle = () => {
-        const sentenceRegex = /[^.!?]+[.!?]+["']?\s*/g;
-        const sentences = mainText.match(sentenceRegex);
-
-        if (sentences) {
-            const separated = sentences
-                .map((s, index) => `${index + 1}) ${s.trim()}`)
-                .join("\n\n");
-            setText(separated);
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
         } else {
-            setText(mainText); // Fallback if no matches
+            const sentenceRegex = /[^.!?]+[.!?]+["']?\s*/g;
+            const sentences = mainText.match(sentenceRegex);
+
+            if (sentences) {
+                const separated = sentences
+                    .map((s, index) => `${index + 1}) ${s.trim()}`)
+                    .join("\n\n");
+                setText(separated);
+                props.showAlert(
+                    "Lines separated by one blank line.",
+                    "success"
+                );
+            } else {
+                setText(mainText); // Fallback if no matches
+            }
         }
     };
 
     const removeExtraSpaces = () => {
-        let newText = text.split(/[ ]+/);
-        setText(newText.join(" "));
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            let newText = text.split(/[ ]+/);
+            setText(newText.join(" "));
+            props.showAlert("Removed extra spaces.", "success");
+        }
     };
 
     // Download
     const handleSaveAsTxt = () => {
-        const element = document.createElement("a");
-        const file = new Blob([text], { type: "text/plain" });
-        element.href = URL.createObjectURL(file);
-        element.download = "Shift-Text.txt";
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            const element = document.createElement("a");
+            const file = new Blob([text], { type: "text/plain" });
+            element.href = URL.createObjectURL(file);
+            element.download = "Shift-Text.txt";
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            props.showAlert("File downloaded successfully!", "success");
+        }
     };
 
     const escapeHTML = (str) =>
@@ -255,24 +318,33 @@ export default function Textform() {
             .replace(/'/g, "&#039;");
 
     const handleSaveAsPDF = () => {
-        const content = escapeHTML(text || "No content to save");
-        const printWindow = window.open("", "_blank");
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            const content = escapeHTML(text || "No content to save");
+            const printWindow = window.open("", "_blank");
 
-        printWindow.document.write(`
-        <html>
-            <head><title>Shift-Text</title></head>
-            <body onload="window.print(); window.onafterprint = window.close();">
-                <pre style="white-space: pre-wrap; font-size: 18px;">${content}</pre>
-            </body>
-        </html>
-    `);
+            printWindow.document.write(`
+                <html>
+                    <head><title>Shift-Text</title></head>
+                    <body onload="window.print(); window.onafterprint = window.close();">
+                        <pre style="white-space: pre-wrap; font-size: 18px;">${content}</pre>
+                    </body>
+                </html>
+            `);
 
-        printWindow.document.close();
+            printWindow.document.close();
+        }
     };
 
     const clearTextBox = () => {
-        setText("");
-        setMainText("");
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            setText("");
+            setMainText("");
+            props.showAlert("Your text has been cleared.", "danger");
+        }
     };
 
     // copy button
@@ -282,19 +354,29 @@ export default function Textform() {
     const [copiedPreview, setCopiedPreview] = useState(false);
 
     const handleCopy = () => {
-        const text1 = textareaRef.current.value;
-        navigator.clipboard.writeText(text1).then(() => {
-            setCopied(true);
-            setTimeout(() => setCopied(false), 300);
-        });
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            const text1 = textareaRef.current.value;
+            navigator.clipboard.writeText(text1).then(() => {
+                setCopied(true);
+                setTimeout(() => setCopied(false), 300);
+            });
+            props.showAlert("Text copied to clipboard.", "success");
+        }
     };
 
     const handlePreviewCopy = () => {
-        const text2 = previewRef.current.innerText;
-        navigator.clipboard.writeText(text2).then(() => {
-            setCopiedPreview(true);
-            setTimeout(() => setCopiedPreview(false), 300);
-        });
+        if (charCount === 0) {
+            props.showAlert("You need to enter some text first.", "warning");
+        } else {
+            const text2 = previewRef.current.innerText;
+            navigator.clipboard.writeText(text2).then(() => {
+                setCopiedPreview(true);
+                setTimeout(() => setCopiedPreview(false), 300);
+            });
+            props.showAlert("Text copied to clipboard.", "success");
+        }
     };
 
     return (
@@ -340,8 +422,15 @@ export default function Textform() {
                     <button
                         className="btn btn-secondary"
                         onClick={() => {
-                            setShowReplacePopup(true);
-                            setHasReplacedOnce(false);
+                            if (charCount === 0) {
+                                props.showAlert(
+                                    "You need to enter some text first.",
+                                    "warning"
+                                );
+                            } else {
+                                setShowReplacePopup(true);
+                                setHasReplacedOnce(false);
+                            }
                         }}
                     >
                         Replace Words
@@ -382,10 +471,6 @@ export default function Textform() {
                     >
                         Remove Extra Spaces
                     </button>
-
-                    {/* <button className="btn btn-info " onClick={copyChangedText}>
-                        Copy to clipboard
-                    </button> */}
 
                     <button
                         className="btn btn-success"
