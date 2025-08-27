@@ -1,5 +1,6 @@
 import React from "react";
 import LogoVid from "../assets/ShiftTextLogo.mp4";
+import { Link } from "react-router-dom";
 // import LogoGif from "../assets/ShiftTextLogo.gif";
 
 export default function Navbar() {
@@ -10,9 +11,9 @@ export default function Navbar() {
             data-bs-theme="dark"
         >
             <div className="container-fluid">
-                <a
+                <Link
                     className="navbar-brand d-flex align-items-center me-3"
-                    href="#"
+                    to="/"
                 >
                     {/* <img src= {LogoGif} alt="ShifText" height="40" /> */}
                     <video
@@ -24,7 +25,7 @@ export default function Navbar() {
                         playsInline
                         style={{ display: "block" }}
                     />
-                </a>
+                </Link>
                 <button
                     className="navbar-toggler"
                     type="button"
@@ -42,22 +43,22 @@ export default function Navbar() {
                 >
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item me-2">
-                            <a
+                            <Link
                                 className="btn btn-outline-light"
-                                href="#"
+                                to="/"
                                 role="button"
                             >
                                 Home
-                            </a>
+                            </Link>
                         </li>
                         <li className="nav-item me-2">
-                            <a
+                            <Link
                                 className="btn btn-outline-light"
-                                href="#"
+                                to="/about"
                                 role="button"
                             >
                                 About
-                            </a>
+                            </Link>
                         </li>
                         <li className="nav-item me-2">
                             <a

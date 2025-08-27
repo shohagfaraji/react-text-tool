@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
+import About from "./components/About";
 import Textform from "./components/Textform";
 import Footer from "./components/Footer";
 import Alert from "./components/Alert";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 function App() {
     const [alert, setAlert] = useState(null);
@@ -21,14 +23,23 @@ function App() {
 
     return (
         <>
-            <div className="app-wrapper">
-                <Navbar />
-                <Alert alert={alert} />
-                <div className="container my-3 main-content">
-                    <Textform showAlert={showAlert} />
+            <Router>
+                <div className="app-wrapper">
+                    <Navbar />
+                    <Alert alert={alert} />
+                    <div className="container my-3 main-content">
+                        <Routes>
+                            <Route exact path="/about" element={<About />} />
+                            <Route
+                                exact
+                                path="/"
+                                element={<Textform showAlert={showAlert} />}
+                            />
+                        </Routes>
+                    </div>
+                    <Footer />
                 </div>
-                <Footer />
-            </div>
+            </Router>
         </>
     );
 }
