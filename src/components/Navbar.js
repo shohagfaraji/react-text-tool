@@ -1,4 +1,6 @@
 import React from "react";
+import LogoVid from "../assets/ShiftTextLogo.mp4";
+// import LogoGif from "../assets/ShiftTextLogo.gif";
 
 export default function Navbar() {
     return (
@@ -8,8 +10,20 @@ export default function Navbar() {
             data-bs-theme="dark"
         >
             <div className="container-fluid">
-                <a className="navbar-brand" href="#">
-                    ShiftText
+                <a
+                    className="navbar-brand d-flex align-items-center me-3"
+                    href="#"
+                >
+                    {/* <img src= {LogoGif} alt="ShifText" height="40" /> */}
+                    <video
+                        src={LogoVid}
+                        height="40"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        style={{ display: "block" }}
+                    />
                 </a>
                 <button
                     className="navbar-toggler"

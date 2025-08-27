@@ -1,4 +1,5 @@
 import React from "react";
+import LogoGif from "../assets/ShiftTextLogo.gif";
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -7,6 +8,7 @@ const Footer = () => {
         <footer style={footerStyle}>
             <div style={containerStyle}>
                 <p style={{ margin: 0 }}>
+                    <img src= {LogoGif} alt="ShifText" height="40" className="mx-2"/>
                     &copy; {currentYear} Shohag Faraji. All rights reserved.
                 </p>
             </div>
