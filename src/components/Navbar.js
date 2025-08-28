@@ -61,13 +61,13 @@ export default function Navbar() {
                             </Link>
                         </li>
                         <li className="nav-item me-2">
-                            <a
+                            <Link
                                 className="btn btn-outline-info"
-                                href="#"
+                                to="/contact"
                                 role="button"
                             >
                                 Contact
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                     <form className="d-flex" role="search">
