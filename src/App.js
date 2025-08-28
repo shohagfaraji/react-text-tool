@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import About from "./components/About";
+import Contact from "./components/Contact";
 import Textform from "./components/Textform";
 import Footer from "./components/Footer";
 import Alert from "./components/Alert";
@@ -29,12 +30,13 @@ function App() {
                     <Alert alert={alert} />
                     <div className="container my-3 main-content">
                         <Routes>
-                            <Route exact path="/about" element={<About />} />
                             <Route
                                 exact
                                 path="/"
                                 element={<Textform showAlert={showAlert} />}
                             />
+                            <Route exact path="/about" element={<About />} />
+                            <Route exact path="/contact" element={<Contact />} />
                         </Routes>
                     </div>
                     <Footer />
