@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
+import Timer from "./components/Timer";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import Textform from "./components/Textform";
@@ -35,8 +36,13 @@ function App() {
                                 path="/"
                                 element={<Textform showAlert={showAlert} />}
                             />
+                            <Route exact path="/timer" element={<Timer />} />
                             <Route exact path="/about" element={<About />} />
-                            <Route exact path="/contact" element={<Contact />} />
+                            <Route
+                                exact
+                                path="/contact"
+                                element={<Contact />}
+                            />
                         </Routes>
                     </div>
                     <Footer />

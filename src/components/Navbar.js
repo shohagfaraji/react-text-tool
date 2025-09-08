@@ -54,6 +54,15 @@ export default function Navbar() {
                         <li className="nav-item me-2">
                             <Link
                                 className="btn btn-outline-light"
+                                to="/timer"
+                                role="button"
+                            >
+                                Clock
+                            </Link>
+                        </li>
+                        <li className="nav-item me-2">
+                            <Link
+                                className="btn btn-outline-light"
                                 to="/about"
                                 role="button"
                             >

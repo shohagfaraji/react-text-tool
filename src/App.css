@@ -1,35 +1,41 @@
 /* Make the full page take up the full height */
-html, body, #root {
-  height: 100%;
-  margin: 0;
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
 }
 
 /* Flex layout for full-height app */
 .app-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#navbarSupportedContent .nav-item {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 /* Main content should grow and push footer down */
 .main-content {
-  flex: 1;
+    flex: 1;
 }
 
 footer {
-  background-color: #222;
-  color: #fff;
-  text-align: center;
-  padding: 1rem;
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
 }
 
 .button-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
 }
-
 
 /* Replace words */
 .replace-popup {
@@ -51,4 +57,29 @@ footer {
     border-radius: 10px;
     width: 300px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Hide spinner arrows on number inputs */
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.no-spinner {
+    appearance: none; /* Standard */
+    -webkit-appearance: none; /* Chrome, Safari, Edge */
+    -moz-appearance: textfield; /* Firefox */
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+    }
 }
